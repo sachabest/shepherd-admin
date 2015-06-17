@@ -1,0 +1,14 @@
+{
+  "global": {
+    "parseVersion": "1.4.2"
+  },
+  "applications": {
+    "Shepherd": {
+      "applicationId": "sC51qbtpTGmAuGNXHEQO61uvIYEoC7XClyIuIOb7",
+      "masterKey": "BHWVlkp4zy1uSFn4np1uoE8iMKYJYkG2EngpCUwo"
+    },
+    "_default": {
+      "link": "Shepherd"
+    }
+  }
+}
