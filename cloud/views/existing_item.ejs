@@ -1,0 +1,65 @@
+<div class='row'>
+	<div class='twelve columns'>
+		<table class='u-full-width'>
+			<thead>
+				<tr>
+					<th>Item Type</th>
+					<% if (category_items[0]s.type == 'Complaint') {%>
+						<%- <th>Category</th> %>
+						<%- <th>Diagnosis</th> %>
+						<%- <th>Name</th> %>
+					<% } else if (category_items[0].type == 'Diagnosis') {%>
+						<%- <th>Category</th> %>
+						<%- <th>Complaint</th> %>
+						<%- <th>Name</th> %>
+					<% } else if (category_items[0].type == 'Prescription') {%>
+						<%- <th>Amount</th> %>
+						<%- <th>Price</th> %>
+						<%- <th>Unit</th> %>
+					<% } else if (category_items[0].type == 'Treatment') {%>
+						<%- <th>Category</th> %>
+						<%- <th>Complaint</th> %>
+						<%- <th>Name</th> %>
+						<%- <th>Price</th> %>
+					<% } %>
+				</tr>
+			</thead>
+			<tbody>
+				<% for (var index = 0; index < category_items.length; i++) { %>
+					<% var first = null; var second = null; var third = null; var fourth = null %>
+					<% if (category_items[0]s.type == 'Complaint') {%>
+					<% first = category_items[index].category; %>
+					<% second = category_items[index].disgnosis; %>
+					<% third = category_items[index].name; %>
+					<% } else if (category_items[0].type == 'Diagnosis') {%>
+					<% first = category_items[index].category; %>
+					<% second = category_items[index].complaint; %>
+					<% third = category_items[index].name; %>
+					<% } else if (category_items[0].type == 'Prescription') {%>
+					<% first = category_items[index].amount; %>
+					<% second = category_items[index].price; %>
+					<% third = category_items[index].unit; %>
+					<% } else if (category_items[0].type == 'Treatment') {%>
+					<% first = category_items[index].category; %>
+					<% second = category_items[index].complaint; %>
+					<% third = category_items[index].name; %>
+					<% fourth = category_items[index].price; %>
+					<% } %>
+					<%- <tr> <td> %>
+					<%= category_items[index].category %>
+					<%- </td><td> %>
+					<%= second %>
+					<%- </td><td> %>
+					<%= third %>
+					<%- </td> %>
+					<% if (fourth != null) { %>
+						<%- <td> %>
+						<%= fourth %>
+						<%- <td> %>
+					<% } %>
+					<%- </tr> %>
+  			<% } %>
+			</tbody>
+		</table>
+	</div>
+</div>

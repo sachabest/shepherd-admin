@@ -1,8 +1,11 @@
-<% include head.ejs %>
+<%- include head.ejs %>
 
 <body>
-  <% include header.ejs %>
-  <% include input_selector.ejs %>
+  <%- include header.ejs %>
+  <div class='contianer'>
+  <% for (var index = 0; index < items.length; i++) %>
+  	<%- include('existing_item.ejs', {category_items: items[index]} %>
+  </div>
 </body>
 
 <script type='text/javascript' src='/static/main.js'>
