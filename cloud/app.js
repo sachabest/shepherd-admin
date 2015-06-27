@@ -1,3 +1,4 @@
+'use strict';
 
 // These two lines are required to initialize Express in Cloud Code.
 var express = require('express');
@@ -7,37 +8,11 @@ var app = express();
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
 app.set('view engine', 'ejs');    // Set the template engine
-app.use(express.bodyParser());    // Middleware for reading request body
 
-var routes = require('clouds/routes');
+var routes = require('./routes/routes');
 
 app.post('/uploadData', [new Multer({dest:'./uploads'}), routes.readCSVFile]);
 
-// Passport.js configuration
-// passport = require('passport-parse');
-// var parse_passport = new ParseStrategy({
-// 	appId,
-// 	clientKey
-// });
-// passport.use(parse_passport);
-
-// passport.authenticate('parse', function(err, user, info) {
-// 	if (err) {
-// 		return res.status(400).json({payload : {error: info}, message : info.message});
-//     }
-// 	if (!user) { 
-// 		return res.status(400).json({payload : {error: info}, message : info.message});
-// 	}
-// 	req.logIn(user, function(err) {
-// 		if (err) {
-// 			return res.status(400).json({payload : {error: err}, message : info.message});
-// 		}
-// 		return res.json({
-// 			payload : req.user,
-// 			message : "Authentication successfull"
-// 		});
-// 	});
-// })(req,res);
 
 // // Example reading from the request query string of an HTTP get request.
 // app.get('/test', function(req, res) {
@@ -56,5 +31,15 @@ app.post('/uploadData', [new Multer({dest:'./uploads'}), routes.readCSVFile]);
 // 	res.render('main', { user_obj: req.user });	
 // });
 
+app.get('/', function(req, res) {
+	res.send('Hello world');
+});
+
 // Attach the Express app to Cloud Code.
-app.listen();
+var server = app.listen(3000, function () {
+
+  var port = server.address().port;
+
+  console.log('Server listening on port %s', port);
+
+});

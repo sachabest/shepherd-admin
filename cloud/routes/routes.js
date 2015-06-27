@@ -1,7 +1,7 @@
 'use strict';
 
 var CSVParser = require('csv-parse');
-var Parse = require('models/ParseWrapper');
+var Parse = require('../models/ParseWrapper');
 var fs = require('fs');
 
 var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done) {

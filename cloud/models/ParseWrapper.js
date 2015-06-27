@@ -1,6 +1,6 @@
 'use strict';
 
-var Parse = require('parse');
+var Parse = require('parse').Parse;
 
 // Parse info
 var clientKey = '6XbLtHBOgarLeMI7ISWqjBqZfBno6lffUsMxJklP';
