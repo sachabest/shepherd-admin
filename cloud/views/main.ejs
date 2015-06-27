@@ -3,7 +3,8 @@
 <body>
   <%- include header.ejs %>
   <div class='container'>
-  <% for (var index = 0; index < items.length; i++) %>
-  	<%- include('existing_item.ejs', {category_items: items[index]} %>
+	  <%- include('input_selector.ejs') %>
   </div>
 </body>
+
+<script type='text/javascript' src='/public/input_manual.js'>
