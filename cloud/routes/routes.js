@@ -11,13 +11,13 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
 
     var parser = new CSVParser({
         delimiter: ',', 
-        columns: columns
     });
 
     parser.on("readable", function(){
         var record;
         while ((record = parser.read())) {
             onNewRecord(record);
+            linesRead += 1;
         }
     });
 
@@ -33,8 +33,8 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
 };
 
 var readCSVFile = function(req, res, next) {
-	var filePath = req.files.file.path;
-    console.log(filePath);
+	var filePath = req.files['csv-data'].path;
+
     function onNewRecord(record){
         console.log(record);
     }
@@ -44,11 +44,11 @@ var readCSVFile = function(req, res, next) {
     }
 
     function done(linesRead){
-        res.send(200, linesRead);
+        res.status(200).send('' + linesRead);
     }
 
     var columns = true; 
-    processCSVFile(filePath, columns, Parse.recordToParseObject, onError, done);
+    processCSVFile(filePath, columns, onNewRecord, onError, done);
 };
 
 var routes = {
