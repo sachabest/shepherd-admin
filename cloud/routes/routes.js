@@ -35,6 +35,7 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
 var readCSVFile = function(req, res, next) {
 	var filePath = req.files['csv-data'].path;
 
+    // Replacing this with actual parsing function
     function onNewRecord(record){
         console.log(record);
     }
