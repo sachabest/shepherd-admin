@@ -27,7 +27,7 @@ app.get('/manual', function(req, res) {
 });
 
 app.get('/confirm', function(req, res) {
-	res.render('confirm.ejs', {items {'Complaint': [], 'Diagnosis': [], 'Prescription': [], 'Test': [], 'Treatment': []}})
+	res.render('confirm.ejs', {items : {'Complaint': [], 'Diagnosis': [], 'Prescription': [], 'Test': [], 'Treatment': []}})
 });
 
 app.post('/uploadData', [new Multer({dest:'./uploads'}), routes.readCSVFile]);
