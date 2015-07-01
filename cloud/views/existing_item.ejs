@@ -21,6 +21,8 @@
 						<%- <th>Complaint</th> %>
 						<%- <th>Name</th> %>
 						<%- <th>Price</th> %>
+					<% } else if (category_items[0].type == 'Test') {%>
+						<%- <th>Amount</th> %>
 					<% } %>
 				</tr>
 			</thead>
@@ -44,6 +46,8 @@
 					<% second = category_items[index].complaint; %>
 					<% third = category_items[index].name; %>
 					<% fourth = category_items[index].price; %>
+					<% } else if (category_items[0].type == 'Test') {%>
+					<% first = category_items[index].amount; %>
 					<% } %>
 					<%- <tr> <td> %>
 					<%= category_items[index].category %>

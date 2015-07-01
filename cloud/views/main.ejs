@@ -3,8 +3,14 @@
 <body>
   <%- include header.ejs %>
   <div class='container'>
+  	<div class='inputs'>
 	  <%- include('input_selector.ejs') %>
+	  </div>
+	  <div class='row'>
+       <input class='plus-button' type="button" value="Add">
+       <input class='plus-button button-primary' type="button" value="Finish">
+    </div>
   </div>
 </body>
 
-<script type='text/javascript' src='/public/input_manual.js'>
+<script type='text/javascript' src='/static/input_manual.js'></script>
