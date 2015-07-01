@@ -4,6 +4,38 @@ $(document).ready(function() {
 
 	var rows = [$('#row0')];
 
+	// TODO : finish
+	var submitFunc = function() {
+		// Vincent look here
+		var fullObjects = [];
+		for (var i = 0; i < rows.length; i++) {
+			if (rows[i] == null) {
+				continue;
+			} else {
+				var typeIdentifier = rows[i].find('#dataInputType' + String(index)).val();
+				var firstObj = rows[i].find('#first' + String(index)).text();
+				var secondObj = rows[i].find('#second' + String(index)).text();
+				var thirdObj = rows[i].find('#third' + String(index)).text();
+				var fourthObj = rows[i].find('#fourth' + String(index)).text();
+				if (typeIdentifier === 'Complaint') {
+					// do something here
+				} else if (typeIdentifier === 'Treatment') {
+					//
+				} else if (typeIdentifier === 'Diagnosis') {
+					// 
+				} else if (typeIdentifier === 'Test') {
+
+				} else if (typeIdentifier === 'Prescription') {
+					//
+				}
+			}
+		}
+	};
+
+	$('#submit-button').click(function() {
+		submitFunc();
+	});
+
 	var minusButton = function(index) {
 		var rowDiv = $('#minus' + index).parent().parent().closest('div');
 		rowDiv.remove();
