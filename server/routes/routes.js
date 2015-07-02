@@ -106,7 +106,7 @@ var readCSVFile = function(req, res, next) {
     function done(collection){
         Parse.objectToParseObject(collection)
             .then(function() {
-        	res.render('confirm.ejs', {items: JSON.stringify(collection)});
+        	res.render('confirm.ejs', {parse_items: JSON.stringify(collection)});
             }, function(err) {
                 res.status(200).send('Error occured ' + JSON.stringify(err));
             });

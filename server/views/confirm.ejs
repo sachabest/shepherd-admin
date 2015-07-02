@@ -3,6 +3,6 @@
 <body>
   <%- include header.ejs %>
   <div class='container'>
-	  <% include('existing_item.ejs', {items: items}) %>
+	  <%- include('existing_item.ejs', {items: parse_items}) %>
   </div>
 </body>
