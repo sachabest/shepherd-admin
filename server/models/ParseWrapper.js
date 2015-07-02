@@ -11,63 +11,66 @@ Parse.initialize(appId, clientKey);
 var Complaint = Parse.Object.extend({
 	className: 'Complaint',
 
-	initialize: function(category, complaint) {
-		this.category = category;
-		this.complaint = complaint;
+	initialize: function(opts) {
+		this.category = opts.category;
+		this.complaint = opts.complaint;
 		this.diagnoses = [];
-	},
-
-	addDiagnosis: function(diagnosis) {
-		this.diagnoses.push(diagnosis);
 	}
 });
 
 var Diagnosis = Parse.Object.extend({
 	className: 'Diagnosis',
 
-	initialize: function(category, name) {
-		this.category = category;
-		this.name = name;
-	},
-
-	addTreatment: function(treatment) {
-
-	},
-
-	addPrescription: function(prescription) {
-
+	initialize: function(opts) {
+		this.category = opts.category;
+		this.name = opts.name;
 	}
 });
 
-var DiagnosticTest = Parse.Object.extend({
-	className: 'DiagnosticTest',
+var Test = Parse.Object.extend({
+	className: 'Test',
 
-	initialize: function(name, price) {
-		this.name = name;
-		this.price = price;
+	initialize: function(opts) {
+		this.name = opts.name;
+		this.price = opts.price;
 	}
 });
 
 var Prescription = Parse.Object.extend({
 	className: 'Prescription',
 
-	initialize: function(name, price) {
-		this.name = name;
-		this.price = price;
+	initialize: function(opts) {
+		this.name = opts.name;
+		this.price = opts.price;
 	}
 });
 
 var Treatment = Parse.Object.extend({
 	className: 'Treatment',
 
-	initialize: function(name, price) {
-		this.name = name;
-		this.price = price;
+	initialize: function(opts) {
+		this.category = opts.category;
+		this.name = opts.name;
+		this.price = opts.price;
 	}
 });
 
 var objectToParseObject = function(object) {
+	var complaint = new Complaint(object.complaint);
+	// var diagnosis = new Diagnosis(object.diagnosis);
+	// var test = new Test(object.test);
+	// var treatment = new Treatment(object.treatment);
+	// var prescription = new Prescription(object.prescription);
 
+	// Save objects
+	console.log(complaint);
+	complaint.save().then(function(object) {
+		console.log('Saved ' + object);
+	});
+	// diagnosis.save();
+	// test.save();
+	// treatment.save();
+	// prescription.save();
 };
 
 var ParseWrapper = {

@@ -80,7 +80,8 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
     parser.on("readable", function(){
         var record;
         while ((record = parser.read())) {
-            collection.push(onNewRecord(record));
+            var object = onNewRecord(record);
+            collection.push(object);
         }
     });
 
@@ -89,8 +90,8 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
     });
 
     parser.on("end", function() {
-        console.log(collection);
-        done('Parsed all records');
+        // console.log(collection);
+        done(collection);
     });
 
     source.pipe(parser);
@@ -103,8 +104,10 @@ var readCSVFile = function(req, res, next) {
         console.log(error);
     }
 
-    function done(linesRead){
-        res.status(200).send('' + linesRead);
+    function done(collection){
+        res.status(200).send('' + JSON.stringify(collection));
+        // you can take this collection and render it
+        // res.render('page', collection) // or something
     }
 
     var columns = true; 
