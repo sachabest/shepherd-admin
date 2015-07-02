@@ -111,7 +111,7 @@ var readCSVFile = function(req, res, next) {
         //         res.status(200).send('Error occured ' + JSON.stringify(err));
         //     });
         console.log(collection);
-        res.render('confirm.ejs', {items: collection});
+        res.render('confirm.ejs', {parse_items: collection});
         // you can take this collection and render it
         // res.render('page', collection) // or something
     }

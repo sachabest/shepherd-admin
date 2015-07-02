@@ -14,20 +14,20 @@
 				<% for (var index = 0; index < items.length; index++) { %>
 					<tr>
 					<% if (items[index].complaint) { %>
-						<td><div><%=items[index].name %></div>
-						<div>items[index].category%></div></td>
+						<td><div><%=items[index].complaint.name %></div>
+						<div><%=items[index].category%></div></td>
 					<% } if (items[index].diagnosis) { %>
-						<td><div><%=items[index].name %></div></td>
+						<td><div><%=items[index].diagnosis.name %></div></td>
 					<% } if (items[index].test) { %>
-						<td><div><%=items[index].name %></div>
+						<td><div><%=items[index].test.name %></div>
 						<div><%=items[index].price %></div></td>
 					<% } if (items[index].prescription) { %>
-						<td><div><%=items[index].name %></div>
-						<div><%=items[index].price %></div></td>
+						<td><div><%=items[index].prescription.name %></div>
+						<div><%=items[index].prescription.price %></div></td>
 					<% } if (items[index].treatment) { %>
-						<td><div><%=items[index].name %></div>
-						<div><%=items[index].category %></div>
-						<div><%=items[index].price %></div></td>
+						<td><div><%=items[index].treatment.name %></div>
+						<div><%=items[index].treatment.category %></div>
+						<div><%=items[index].treatment.price %></div></td>
 					<% } %>
 					</tr>
   				<% }; %>
