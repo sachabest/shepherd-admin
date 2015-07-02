@@ -3,7 +3,11 @@
 		<table class='u-full-width'>
 			<thead>
 				<tr>
-					<th>Item Type</th>
+					<th>Complaint</th>
+					<th>Diagnosis</th>
+					<th>Prescription</th>
+					<th>Treatment</th>
+					<th>Test</th><!-- 
 					<% if (category_items[0]s.type == 'Complaint') {%>
 						<%- <th>Category</th> %>
 						<%- <th>Diagnosis</th> %>
@@ -23,33 +27,51 @@
 						<%- <th>Price</th> %>
 					<% } else if (category_items[0].type == 'Test') {%>
 						<%- <th>Amount</th> %>
-					<% } %>
+					<% } %> -->
 				</tr>
 			</thead>
 			<tbody>
-				<% for (var index = 0; index < category_items.length; i++) { %>
+				<% for (var index = 0; index < items.length; i++) { %>
 					<% var first = null; var second = null; var third = null; var fourth = null %>
-					<% if (category_items[0]s.type == 'Complaint') {%>
-					<% first = category_items[index].category; %>
-					<% second = category_items[index].disgnosis; %>
-					<% third = category_items[index].name; %>
-					<% } else if (category_items[0].type == 'Diagnosis') {%>
-					<% first = category_items[index].category; %>
-					<% second = category_items[index].complaint; %>
-					<% third = category_items[index].name; %>
-					<% } else if (category_items[0].type == 'Prescription') {%>
-					<% first = category_items[index].amount; %>
-					<% second = category_items[index].price; %>
-					<% third = category_items[index].unit; %>
-					<% } else if (category_items[0].type == 'Treatment') {%>
-					<% first = category_items[index].category; %>
-					<% second = category_items[index].complaint; %>
-					<% third = category_items[index].name; %>
-					<% fourth = category_items[index].price; %>
-					<% } else if (category_items[0].type == 'Test') {%>
-					<% first = category_items[index].amount; %>
+					<%- <tr> %>
+					<% if (category_items[index].complaint != null) { %>
+						<%- <td><div>items[index].name</div> %>
+						<%- <div>items[index].category</div></td> %>
+					<% } if (category_items[index].diagnosis != null) { %>
+						<%- <td><div>items[index].name</div></td> %>
+					<% } if (category_items[index].test != null) { %>
+						<%- <td><div>items[index].name</div> %>
+						<%- <div>items[index].price</div></td> %>
+					<% } if (category_items[index].prescription != null) { %>
+						<%- <td><div>items[index].name</div> %>
+						<%- <div>items[index].price</div></td> %>
+					<% } if (category_items[index].treatment != null) { %>
+						<%- <td><div>items[index].name</div> %>
+						<%- <div>items[index].category</div> %>
+						<%- <div>items[index].price</div> </td>%>
 					<% } %>
-					<%- <tr> <td> %>
+					<%- </tr> %><!-- 
+						<% first = category_items[index].category; %>
+						<% second = category_items[index].disgnosis; %>
+						<% third = category_items[index].name; %>
+						<% } else if (category_items[0].type == 'Diagnosis') {%>
+						<% first = category_items[index].category; %>
+						<% second = category_items[index].complaint; %>
+						<% third = category_items[index].name; %>
+						<% } else if (category_items[0].type == 'Prescription') {%>
+						<% first = category_items[index].amount; %>
+						<% second = category_items[index].price; %>
+						<% third = category_items[index].unit; %>
+						<% } else if (category_items[0].type == 'Treatment') {%>
+						<% first = category_items[index].category; %>
+						<% second = category_items[index].complaint; %>
+						<% third = category_items[index].name; %>
+						<% fourth = category_items[index].price; %>
+						<% } else if (category_items[0].type == 'Test') {%>
+						<% first = category_items[index].amount; %>
+						<%- </tr> %> -->
+<!-- 					<% } %>
+ --><!-- 					<%- <tr> <td> %>
 					<%= category_items[index].category %>
 					<%- </td><td> %>
 					<%= second %>
@@ -61,8 +83,8 @@
 						<%= fourth %>
 						<%- <td> %>
 					<% } %>
-					<%- </tr> %>
-  			<% } %>
+					<%- </tr> %> -->
+  				<% } %>
 			</tbody>
 		</table>
 	</div>
