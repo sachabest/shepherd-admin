@@ -104,12 +104,14 @@ var readCSVFile = function(req, res, next) {
     }
 
     function done(collection){
-        Parse.objectToParseObject(collection)
-            .then(function() {
-        	   res.render('confirm.ejs', {items: collection});
-            }, function(err) {
-                res.status(200).send('Error occured ' + JSON.stringify(err));
-            });
+        // Parse.objectToParseObject(collection)
+        //     .then(function() {
+        // 	   res.render('confirm.ejs', {items: collection});
+        //     }, function(err) {
+        //         res.status(200).send('Error occured ' + JSON.stringify(err));
+        //     });
+        console.log(collection);
+        res.render('confirm.ejs', {items: collection});
         // you can take this collection and render it
         // res.render('page', collection) // or something
     }
