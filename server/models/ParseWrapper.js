@@ -1,12 +1,13 @@
 'use strict';
 
 var Parse = require('parse').Parse;
+var _ = require('underscore');
 
 // Parse info
-var clientKey = '6XbLtHBOgarLeMI7ISWqjBqZfBno6lffUsMxJklP';
+var javascriptKey = 'zmtHF2joVCAOOLOHZRogYCVCxgJHsaBHJ9m52jVc';
 var appId = 'sC51qbtpTGmAuGNXHEQO61uvIYEoC7XClyIuIOb7';
 
-Parse.initialize(appId, clientKey);
+Parse.initialize(appId, javascriptKey);
 
 var Complaint = Parse.Object.extend({
 	className: 'Complaint',
@@ -55,18 +56,18 @@ var Treatment = Parse.Object.extend({
 	}
 });
 
-var objectToParseObject = function(object) {
-	var complaint = new Complaint(object.complaint);
+var objectToParseObject = function(objects) {
+	var complaints = _.map(objects, function(object){
+		return new Complaint(object.complaint);
+	});
+	// var complaint = new Complaint(object.complaint);
 	// var diagnosis = new Diagnosis(object.diagnosis);
 	// var test = new Test(object.test);
 	// var treatment = new Treatment(object.treatment);
 	// var prescription = new Prescription(object.prescription);
 
 	// Save objects
-	console.log(complaint);
-	complaint.save().then(function(object) {
-		console.log('Saved ' + object);
-	});
+	return Parse.Object.saveAll(complaints);
 	// diagnosis.save();
 	// test.save();
 	// treatment.save();
