@@ -1,4 +1,3 @@
-require('cloud/app.js');
 var _ = require('underscore');
 
 // Use Parse.Cloud.define to define as many cloud functions as you want.
