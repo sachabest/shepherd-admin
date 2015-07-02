@@ -18,7 +18,6 @@ app.use(BodyParser.json());
 
 app.use('/static', express.static('public'));
 
-app.get('')
 // App routing
 app.get('/', function(req, res) {
 	res.render('upload.ejs');

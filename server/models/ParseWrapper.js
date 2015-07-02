@@ -6,13 +6,6 @@ var Parse = require('parse').Parse;
 var clientKey = '6XbLtHBOgarLeMI7ISWqjBqZfBno6lffUsMxJklP';
 var appId = 'sC51qbtpTGmAuGNXHEQO61uvIYEoC7XClyIuIOb7';
 
-var COMPLAINT = 1;
-var DIAGNOSIS_STATUS = 2;
-var DIAGNOSIS = 3;
-var DIAGNOSTIC_TEST = 4;
-var PHARMA_TREATMENT = 6;
-var NON_PHARMA_TREATMENT = 8;
-
 Parse.initialize(appId, clientKey);
 
 var Complaint = Parse.Object.extend({
@@ -73,35 +66,12 @@ var Treatment = Parse.Object.extend({
 	}
 });
 
-var recordToParseObject = function(record) {
-
-	// Parse record into objects
-	var complaint = new Complaint(record[0], record[COMPLAINT]);
-	var diagnosis;
-	var dianosticTest;
-	var treatment;
-	var prescription;
-	var parts;
-	if (record[DIAGNOSIS_STATUS] === 'Has diagnosis') {
-		diagnosis = new Diagnosis(record[DIAGNOSIS]);
-		parts = record[PHARMA_TREATMENT].split(': ');
-		prescription = new Prescription(parts[0], parts[1]);
-		parts = record[NON_PHARMA_TREATMENT].split(': ');
-		treatment = new Treatment(parts[0], parts[1]);
-	} else {
-		parts = record[DIAGNOSTIC_TEST].split(': ');
-		dianosticTest = new DiagnosticTest(parts[0], parts[1]);
-	}
-	
-	// Creating relationships
-	if (diagnosis) {
-		diagnosis.addTreatment();
-	}
+var objectToParseObject = function(object) {
 
 };
 
 var ParseWrapper = {
-	recordToParseObject: recordToParseObject,
+	objectToParseObject: objectToParseObject,
 };
 
 module.exports = ParseWrapper;
