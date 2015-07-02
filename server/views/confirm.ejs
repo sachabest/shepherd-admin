@@ -3,10 +3,6 @@
 <body>
   <%- include header.ejs %>
   <div class='container'>
-	  <%- include('existing_item.ejs', {category_items: items['Diagnosis']}) %>
-	  <%- include('existing_item.ejs', {category_items: items['Complaint']}) %>
-	  <%- include('existing_item.ejs', {category_items: items['Treatment']}) %>
-	  <%- include('existing_item.ejs', {category_items: items['Prescription']}) %>
-	  <%- include('existing_item.ejs', {category_items: items['Test']}) %>
+	  <% include('existing_item.ejs', {items: items}) %>
   </div>
 </body>
