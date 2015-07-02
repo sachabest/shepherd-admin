@@ -90,7 +90,6 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
     });
 
     parser.on("end", function() {
-        // console.log(collection);
         done(collection);
     });
 
@@ -105,7 +104,12 @@ var readCSVFile = function(req, res, next) {
     }
 
     function done(collection){
-        res.status(200).send('' + JSON.stringify(collection));
+        Parse.objectToParseObject(collection)
+            .then(function() {
+                res.status(200).send('' + JSON.stringify(collection));
+            }, function(err) {
+                res.status(200).send('Error occured ' + JSON.stringify(err));
+            });
         // you can take this collection and render it
         // res.render('page', collection) // or something
     }
