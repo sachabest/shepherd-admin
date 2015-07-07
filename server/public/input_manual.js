@@ -96,12 +96,12 @@ $(document).ready(function() {
 	};
 
 	$('.plus-button').click(function() {
-		var rowDiv = rows[rows.length - 1];
+		var rowDiv = rows[0];
 		console.log(rowDiv);
 		var newDiv = rowDiv.clone();
 		newDiv.attr('id', 'row' + rows.length);
 		var strIndex = String(rows.length);
-		var prevStrIndex = String(Number(strIndex) - 1);
+		var prevStrIndex = String(0);
 		var switchObj = newDiv.find('#dataInputType' + prevStrIndex);
 		switchObj.attr('id', 'dataInputType' + strIndex);
 		console.log(newDiv.find('#first' + strIndex));
@@ -122,6 +122,7 @@ $(document).ready(function() {
 		});
 		rowDiv.parent().append(newDiv);
 		rows.push(newDiv);
+		console.log(newDiv);
 		console.log(rows);
 	});
 
