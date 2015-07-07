@@ -12,27 +12,33 @@ $(document).ready(function() {
 			if (rows[i] == null) {
 				continue;
 			} else {
-				var typeIdentifier = rows[i].find('#dataInputType' + String(index)).val();
-				var firstObj = rows[i].find('#first' + String(index)).text();
-				var secondObj = rows[i].find('#second' + String(index)).text();
-				var thirdObj = rows[i].find('#third' + String(index)).text();
-				var fourthObj = rows[i].find('#fourth' + String(index)).text();
+				var finalObject = {complaint: null, test: null, prescription: null, diagnosis: null, treatment: null};
+				var typeIdentifier = rows[i].find('#dataInputType' + String(i)).val();
+				var firstObj = rows[i].find('#first' + String(i)).text();
+				var secondObj = rows[i].find('#second' + String(i)).text();
+				var thirdObj = rows[i].find('#third' + String(i)).text();
+				var fourthObj = rows[i].find('#fourth' + String(i)).text();
 				if (typeIdentifier === 'Complaint') {
-					// do something here
+					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj};
 				} else if (typeIdentifier === 'Treatment') {
-					//
+					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj, price: fourthObj};
 				} else if (typeIdentifier === 'Diagnosis') {
-					// 
+					finalObject.diagnosis = {category: firstObj, name: secondObj, complaint: thirdObj};
 				} else if (typeIdentifier === 'Test') {
-
+					finalObject.complaint = {category: firstObj, name: secondObj, complaint: thirdObj, price: fourthObj};
 				} else if (typeIdentifier === 'Prescription') {
-					//
+					finalObject.complaint = {amount: firstObj, price: secondObj, unit: thirdObj, treatment: fourthObj};
 				}
+				fullObjects.push(finalObject);
 			}
 		}
+		console.log(fullObjects);
+		$.post('/manualUpload', fullObjects);
+		// now fullObjects is done
 	};
 
 	$('#submit-button').click(function() {
+		console.log('submitting');
 		submitFunc();
 	});
 
@@ -76,22 +82,18 @@ $(document).ready(function() {
 		} else if (rowSelf.val() === 'Treatment') {
 			first.text('Category');
 			second.text('Name');
-			third.text('Complaint');
+			third.text('Diagnosis');
 			fourth.text('Price');
 		} else if (rowSelf.val() === 'Prescription') {
 			first.text('Amount');
 			second.text('Price');
 			third.text('Unit')
-			fourth.hide();
-			fourthInput.hide();
+			fourth.text('Treatment')
 		} else if (rowSelf.val() === 'Test') {
-			first.text('Amount');
-			second.hide();
-			secondInput.hide();
-			third.hide();
-			thirdInput.hide();
-			fourth.hide();
-			fourthInput.hide();
+			first.text('Category');
+			second.text('Name');
+			third.text('Complaint');
+			fourth.text('Price');
 		}
 	};
 
