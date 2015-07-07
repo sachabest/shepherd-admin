@@ -3,43 +3,45 @@ var _ = require('underscore');
 // Use Parse.Cloud.define to define as many cloud functions as you want.
 // For example:
 Parse.Cloud.beforeSave('Complaint', function(request, response) {
-    var Complaint = Parse.Object.extend('Complaint');
-    var query = new Parse.Query(Complaint);
+
+	// Mad hacky but w/e man
+    if (request.object.update) {
+    	response.success();
+    }
+    var query = new Parse.Query('Complaint');
     query.equalTo('Name', request.object.get('Name'));
     query.first()
     	.then(function(object) {
     		if (object) {
 		        var diagnoses = object.get('Diagnoses');
 		        diagnoses = _.map(diagnoses, function(diagnosis) {
-					return diagnosis.get('Name');
+					return diagnosis;
 		        });
 
-		        var exist = _.contains(diagnoses, request.object.get('Diagnoses').get('Name'));
-		        if (!exist) {
-			      	object.add('Diagnoses', request.object.get('Diagnosis'));
-			      	return object.save();
-		        	// object.save();
-		        	// 	.then(function() {
-		        	// 		response.error('Object existed. Added new diagnosis');
-		        	// 	}, function() {
-		        	// 		response.error('Objected existed and failed to add new diagnosis');
-		        	// 	});
-		        	// response.error();
+		        var inputDiagnoses = request.object.get('Diagnoses');
+
+		        if (inputDiagnoses.length > 0) {
+		        	var exist = _.contains(diagnoses, inputDiagnoses[0]);
+			        if (!exist) {
+				      	object.add('Diagnoses', inputDiagnoses[0]);
+				     	object.update = true;
+			        	object.save().then(function() {
+			        		response.error('Object existed. Added new diagnoses');
+			        	}, function() {
+			        		response.error('Object existed. Failed to add new diagnoses');
+			        	});
+			        }
 		        }
 		        else {
-		        	return Parse.Promise.as(false);
-		        }
+			        response.error('Object already exist');
+			    }  
 		    }
-    	}).then(function(object) {
-    		if (object) {
-    			response.error('Object existed');
-    		} else {
-    			response.success();
-    		}
-    	},  function(error) {
-    		response.error('Error performing save');
-    	})
-
+		    else {
+		    	response.success();
+		    }
+    	}, function() {
+    		response.error('Error during save');
+    	});
 });
 
 

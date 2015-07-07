@@ -12,65 +12,59 @@ Parse.initialize(appId, javascriptKey);
 var Complaint = Parse.Object.extend({
 	className: 'Complaint',
 
-	initialize: function(opts) {
-		this.Category = opts.category;
-		this.Name = opts.name;
-		this.Diagnoses = [opts.diagnosis];
+	initialize: function(attr, opts) {
+		this.set('Category', opts.category);
+		this.set('Name', opts.name);
+		if (opts.diagnosis) {
+			this.set('Diagnoses', [opts.diagnosis]);
+		}
 	}
 });
 
 var Diagnosis = Parse.Object.extend({
 	className: 'Diagnosis',
 
-	initialize: function(opts, complaintReference) {
-		this.Category = opts.category;
-		this.Name = opts.name;
-		if (complaintReference) {
-			this.Complaint = complaintReference;
-		}
+	initialize: function(attr, opts, complaintReference) {
+		this.set('Category', opts.category);
+		this.set('Name', opts.name);
+		this.set('Complaint', complaintReference);
 	}
 });
 
 var Test = Parse.Object.extend({
 	className: 'Test',
 
-	initialize: function(opts, complaintReference) {
-		this.Name = opts.name;
-		this.Price = opts.price;
-		if (complaintReference) {
-			this.Complaint = complaintReference;
-		}
+	initialize: function(attr, opts, complaintReference) {
+		this.set('Name', opts.name);
+		this.set('Price', opts.price);
+		this.set('Complaint', complaintReference);		
 	}
 });
 
 var Prescription = Parse.Object.extend({
 	className: 'Prescription',
 
-	initialize: function(opts) {
-		this.Name = opts.name;
-		this.Price = opts.price;
+	initialize: function(attr, opts) {
+		this.set('Category', opts.category);
+		this.set('Price', opts.price);
 	}
 });
 
 var Treatment = Parse.Object.extend({
 	className: 'Treatment',
 
-	initialize: function(opts, diagnosisReference, prescriptionReference) {
-		this.Category = opts.category;
-		this.Name = opts.name;
-		this.Price = opts.price;
-		if (diagnosisReference) {
-			this.Diagnosis = diagnosisReference;
-		}
-		if (prescriptionReference) {
-			this.Prescription = prescriptionReference;
-		}
+	initialize: function(attr, opts, diagnosisReference, prescriptionReference) {
+		this.set('Category', opts.category);
+		this.set('Name', opts.name);
+		this.set('Price', opts.price);
+		this.set('Diagnosis', diagnosisReference);
+		this.set('Prescription', prescriptionReference);
 	}
 });
 
 var objectToParseObject = function(objects) {
 	var complaints = _.map(objects, function(object){
-		return new Complaint(object.complaint);
+		return new Complaint(null, object.complaint);
 	});
 
 	var diagnoses = _.map(objects, function(object) {
@@ -79,7 +73,7 @@ var objectToParseObject = function(objects) {
 				return compl;
 			}
 		});
-		return new Diagnosis(object.diagnosis, complaint);
+		return new Diagnosis(null, object.diagnosis, complaint);
 	});
 
 	var tests = _.map(objects, function(object) {
@@ -88,11 +82,11 @@ var objectToParseObject = function(objects) {
 				return compl;
 			}
 		});
-		return new Test(object.test, complaint);
+		return new Test(null, object.test, complaint);
 	});
 
 	var prescriptions = _.map(objects, function(object) {
-		return new Prescription(object.prescription);
+		return new Prescription(null, object.prescription);
 	});
 
 	var treatments = _.map(objects, function(object) {
@@ -109,20 +103,22 @@ var objectToParseObject = function(objects) {
 				}
 			});
 		}
-		return new Treatment(object.treatment, diagnosis, prescription);
+		return new Treatment(null, object.treatment, diagnosis, prescription);
 	});
 
 	// console.log(complaints);
 	// console.log(treatments);
 
-	// Save objects
+	// Save object
 
-	var complaintsPromise;
-	var prescriptionPromise;
-	var diagnosesPromise;
-	var testsPromise;
-	var treatmentsPromise;
+	var complaintPromise = Parse.Promise.as();
+	_.each(complaints, function(complaint) {
+		complaintPromise = complaintPromise.then(function() {
+			return complaint.save();
+		});
+	});
 
+	// _.each()
 
 	// var parsePromise = Parse.Object.saveAll(complaints)
 	// 	.then(function() {
@@ -147,9 +143,10 @@ var objectToParseObject = function(objects) {
 	// 		return Parse.Promise.error(error);
 	// 	});
 
-	var parsePromise = Parse.Object.saveAll(complaints);
+	// var parsePromise = Parse.Object.saveAll(complaints);
 	
-	return parsePromise;
+	// return parsePromise;
+	return complaintPromise;
 };
 
 var ParseWrapper = {
