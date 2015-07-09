@@ -29,7 +29,7 @@ var recordToObject = function(record) {
     var treatment = {};
 
     if (record[DIAGNOSTIC_TEST]) {
-        parts = record[DIAGNOSTIC_TEST].split(': ');
+        parts = record[DIAGNOSTIC_TEST].split(': $');
         test = {
             name: parts[0],
             price: parts[1],
@@ -38,7 +38,7 @@ var recordToObject = function(record) {
     }
     
     if (record[PHARMACOTHERAPY]) {
-        parts = record[PHARMACOTHERAPY].split(': ');
+        parts = record[PHARMACOTHERAPY].split(': $');
         prescription = {
             name: parts[0],
             price: parts[1]
@@ -53,7 +53,7 @@ var recordToObject = function(record) {
     }
 
     if (record[NON_PHARMACOTHERAPY]) {
-        parts = record[NON_PHARMACOTHERAPY].split(': ');
+        parts = record[NON_PHARMACOTHERAPY].split(': $');
         treatment = {
             category: 'Non-Pharmacotherapy',
             name: parts[0],

@@ -5,7 +5,8 @@ var _ = require('underscore');
 Parse.Cloud.beforeSave('Complaint', function(request, response) {
 
 	// Mad hacky but w/e man
-    if (request.object.update) {
+    if (request.object.get('updating')) {
+    	request.object.unset('updating');
     	response.success();
     }
     var query = new Parse.Query('Complaint');
@@ -20,16 +21,20 @@ Parse.Cloud.beforeSave('Complaint', function(request, response) {
 
 		        var inputDiagnoses = request.object.get('Diagnoses');
 
-		        if (inputDiagnoses.length > 0) {
+		        if (inputDiagnoses && inputDiagnoses.length > 0) {
 		        	var exist = _.contains(diagnoses, inputDiagnoses[0]);
 			        if (!exist) {
 				      	object.add('Diagnoses', inputDiagnoses[0]);
-				     	object.update = true;
+				     	object.set('updating', true);
 			        	object.save().then(function() {
 			        		response.error('Object existed. Added new diagnoses');
-			        	}, function() {
+			        	}, function(error) {
+			        		console.log(JSON.stringify(error));
 			        		response.error('Object existed. Failed to add new diagnoses');
 			        	});
+			        }
+			        else {
+			        	response.error('Object already exist');
 			        }
 		        }
 		        else {
@@ -44,6 +49,72 @@ Parse.Cloud.beforeSave('Complaint', function(request, response) {
     	});
 });
 
+Parse.Cloud.beforeSave('Test', function(request, response) {
+
+	var query = new Parse.Query('Test');
+	query.equalTo('Name', request.object.get('Name'));
+	query.first()
+		.then(function(test) {
+			if (test) {
+				response.error('Object already exist');
+			}
+			else {
+				var complaintQuery = new Parse.Query('Complaint');
+				var currentComplaint = request.object.get('ComplaintName');
+				if (currentComplaint) {
+					complaintQuery.equalTo('Name', currentComplaint);
+					complaintQuery.first()
+						.then(function(complaint) {
+							if (complaint) {
+								request.object.set('Complaint', complaint);
+								request.object.unset('ComplaintName');
+								response.success();
+							} else {
+								response.error('Complaint linked not found');
+							}
+						}, function() {
+							response.error('Failed to add object');
+						});
+				} else {
+					response.success();
+				}
+			}
+			
+		}, function() {
+			response.error('Failed to add object');
+		});
+});
+
+Parse.Cloud.beforeSave('Diagnosis', function(request, response) {
+	var query = new Parse.Query('Diagnosis');
+	query.equalTo('Name', request.object.get('Name'));
+	query.first()
+		.then(function(diagnosis) {
+			if (diagnosis) {
+				response.error('Diagnosis already exists');
+			} else {
+				var complaintQuery = new Parse.Query('Complaint');
+				complaintQuery.equalTo('Name', request.object.get('ComplaintName'));
+				complaintQuery.first()
+					.then(function(complaint) {
+						if (complaint) {
+							request.object.set('Complaint', complaint);
+							request.object.unset('ComplaintName');
+							response.success();
+						}
+						else {
+							response.error('Complaint linked not found');
+						}
+					}, function() {
+						response.error('Error querying for complaint when updating Diagnosis');
+					});
+			}
+			
+		}, function() {
+			response.error('Error querrying for existing diagnosis');
+		});
+});
+
 
 Parse.Cloud.beforeSave('Prescription', function(request, response) {
 	var Prescription = Parse.Object.extend('Prescription');
@@ -55,49 +126,6 @@ Parse.Cloud.beforeSave('Prescription', function(request, response) {
 		},
 		function() {
 			response.success();
-		});
-});
-
-
-Parse.Cloud.beforeSave('Diagnosis', function(request, response) {
-	var Diagnosis = Parse.Object.extend('Diagnosis');
-	var Complaint = Parse.Object.extend('Complaint');
-	var query = new Parse.Query(Diagnosis);
-	query.equalTo('Name', request.object.get('Name'));
-	query.first()
-		.then(function(diagnosis) {
-			response.error('Object already exist');
-		}, function() {
-			var complaintQuery = new Parse.Query(Complaint);
-			complaintQuery.equalTo('Name', request.object.get('Complaint').get('Name'));
-			complaintQuery.first()
-				.then(function(complaint) {
-					request.object.set('Complaint', complaint);
-					response.success();
-				}, function() {
-					response.success();
-				})
-		});
-});
-
-Parse.Cloud.beforeSave('Test', function(request, response) {
-	var Test = Parse.Object.extend('Test');
-	var Complaint = Parse.Object.extend('Complaint');
-	var query = new Parse.Query(Test);
-	query.equalTo('Name', request.object.get('Name'));
-	query.first()
-		.then(function(test) {
-			response.error('Object already exist');
-		}, function() {
-			var complaintQuery = new Parse.Query(Complaint);
-			complaintQuery.equalTo('Name', request.object.get('Complaint').get('Name'));
-			complaintQuery.first()
-				.then(function(complaint) {
-					request.object.set('Complaint', complaint);
-					response.success();
-				}, function() {
-					response.success();
-				});
 		});
 });
 

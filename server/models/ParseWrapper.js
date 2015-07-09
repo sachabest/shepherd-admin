@@ -13,10 +13,12 @@ var Complaint = Parse.Object.extend({
 	className: 'Complaint',
 
 	initialize: function(attr, opts) {
-		this.set('Category', opts.category);
-		this.set('Name', opts.name);
-		if (opts.diagnosis) {
-			this.set('Diagnoses', [opts.diagnosis]);
+		if (opts) {
+			this.set('Category', opts.category);
+			this.set('Name', opts.name);
+			if (opts.diagnosis) {
+				this.set('Diagnoses', [opts.diagnosis]);
+			}
 		}
 	}
 });
@@ -24,20 +26,22 @@ var Complaint = Parse.Object.extend({
 var Diagnosis = Parse.Object.extend({
 	className: 'Diagnosis',
 
-	initialize: function(attr, opts, complaintReference) {
-		this.set('Category', opts.category);
-		this.set('Name', opts.name);
-		this.set('Complaint', complaintReference);
+	initialize: function(attr, opts) {
+		if (opts.name) {
+			this.set('Category', opts.category);
+			this.set('Name', opts.name);
+			this.set('ComplaintName', opts.complaint);
+		}
 	}
 });
 
 var Test = Parse.Object.extend({
 	className: 'Test',
 
-	initialize: function(attr, opts, complaintReference) {
+	initialize: function(attr, opts) {
 		this.set('Name', opts.name);
-		this.set('Price', opts.price);
-		this.set('Complaint', complaintReference);		
+		this.set('Price', Number(opts.price));	
+		this.set('ComplaintName', opts.complaint);
 	}
 });
 
@@ -62,91 +66,68 @@ var Treatment = Parse.Object.extend({
 	}
 });
 
+var saveObjectsSequentially = function(objects, prevPromise) {
+	var promise = (prevPromise) ? prevPromise : Parse.Promise.as();
+	_.each(objects, function(object) {
+		promise = promise.always(function() {
+			return object.save();
+		});
+	});
+	return promise;
+};
+
 var objectToParseObject = function(objects) {
 	var complaints = _.map(objects, function(object){
 		return new Complaint(null, object.complaint);
 	});
 
-	var diagnoses = _.map(objects, function(object) {
-		var complaint = _.find(complaints, function(compl) {
-			if (compl.Name === object.diagnosis.complaint) {
-				return compl;
-			}
-		});
-		return new Diagnosis(null, object.diagnosis, complaint);
-	});
-
 	var tests = _.map(objects, function(object) {
-		var complaint = _.find(complaints, function(compl) {
-			if (compl.Name === object.test.complaint) {
-				return compl;
-			}
-		});
-		return new Test(null, object.test, complaint);
+		return new Test(null, object.test);
 	});
 
-	var prescriptions = _.map(objects, function(object) {
-		return new Prescription(null, object.prescription);
-	});
-
-	var treatments = _.map(objects, function(object) {
-		var diagnosis = _.find(diagnoses, function(diag) {
-			if (diag.Name === object.treatment.diagnosis) {
-				return diag;
-			}
-		});
-		var prescription;
-		if (object.treatment.category === 'Pharmacotherapy') {
-			prescription = _.find(prescriptions, function(pres) {
-				if (pres.name === object.treatment.name) {
-					return pres;
-				}
-			});
+	var diagnoses = _.map(objects, function(object) {
+		if (object.diagnosis.name) {
+			return new Diagnosis(null, object.diagnosis);
 		}
-		return new Treatment(null, object.treatment, diagnosis, prescription);
 	});
 
-	// console.log(complaints);
-	// console.log(treatments);
+	diagnoses = _.filter(diagnoses, function(diagnosis) {
+		if (diagnosis) {
+			return diagnosis;
+		}
+	});
+
+	// var prescriptions = _.map(objects, function(object) {
+	// 	return new Prescription(null, object.prescription);
+	// });
+
+	// var treatments = _.map(objects, function(object) {
+	// 	var diagnosis = _.find(diagnoses, function(diag) {
+	// 		if (diag.Name === object.treatment.diagnosis) {
+	// 			return diag;
+	// 		}
+	// 	});
+	// 	var prescription;
+	// 	if (object.treatment.category === 'Pharmacotherapy') {
+	// 		prescription = _.find(prescriptions, function(pres) {
+	// 			if (pres.name === object.treatment.name) {
+	// 				return pres;
+	// 			}
+	// 		});
+	// 	}
+	// 	return new Treatment(null, object.treatment, diagnosis, prescription);
+	// });
 
 	// Save object
 
-	var complaintPromise = Parse.Promise.as();
-	_.each(complaints, function(complaint) {
-		complaintPromise = complaintPromise.then(function() {
-			return complaint.save();
-		});
-	});
+	// var complaintPromise = saveObjectsSequentially(complaints);
 
-	// _.each()
+	// var testPromise = saveObjectsSequentially(tests, complaintPromise);
+	console.log(diagnoses);
 
-	// var parsePromise = Parse.Object.saveAll(complaints)
-	// 	.then(function() {
-	// 		return Parse.Object.saveAll(prescriptions);
-	// 	}, function(error) {
-	// 		console.log(error);
-	// 		return error;
-	// 	})
-	// 	.then(function() {
-	// 		return Parse.Object.saveAll(diagnoses);
-	// 	}, function(error) {
-	// 		return Parse.Promise.error(error);
-	// 	})
-	// 	.then(function() {
-	// 		return Parse.Object.saveAll(tests);
-	// 	}, function(error) {
-	// 		return Parse.Promise.error(error);
-	// 	})
-	// 	.then(function() {
-	// 		return Parse.Object.saveAll(treatments);
-	// 	}, function(error) {
-	// 		return Parse.Promise.error(error);
-	// 	});
+	var diagnosesPromise = saveObjectsSequentially(diagnoses);
 
-	// var parsePromise = Parse.Object.saveAll(complaints);
-	
-	// return parsePromise;
-	return complaintPromise;
+	return diagnosesPromise;
 };
 
 var ParseWrapper = {
