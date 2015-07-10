@@ -31,7 +31,6 @@ app.get('/confirm', function(req, res) {
 	res.render('existing_item.ejs', {items: null});
 });
 
-app.get('/')
 app.post('/uploadData', [new Multer({dest:'./uploads'}), routes.readCSVFile]);
 
 // Start server

@@ -16,26 +16,29 @@ var recordToObject = function(record) {
     var parts;
     var complaint = {
         name: record[COMPLAINT_NAME],
-        category: record[COMPLAINT_CATEGORY]
+        category: record[COMPLAINT_CATEGORY],
+        diagnosis: record[DIAGNOSIS]
     };
     var diagnosis = {
-        name: record[DIAGNOSIS]
+        name: record[DIAGNOSIS],
+        complaint: complaint.name
     };
 
-    var test;
-    var prescription;
-    var treatment;
+    var test = {};
+    var prescription = {};
+    var treatment = {};
 
     if (record[DIAGNOSTIC_TEST]) {
-        parts = record[DIAGNOSTIC_TEST].split(': ');
+        parts = record[DIAGNOSTIC_TEST].split(': $');
         test = {
             name: parts[0],
-            price: parts[1]
+            price: parts[1],
+            complaint: complaint.name
         };
     }
     
     if (record[PHARMACOTHERAPY]) {
-        parts = record[PHARMACOTHERAPY].split(': ');
+        parts = record[PHARMACOTHERAPY].split(': $');
         prescription = {
             name: parts[0],
             price: parts[1]
@@ -44,16 +47,18 @@ var recordToObject = function(record) {
         treatment = {
             category: 'Pharmacotherapy',
             name: parts[0],
-            price: parts[1]
+            price: parts[1],
+            diagnosis: diagnosis.name
         };
     }
 
     if (record[NON_PHARMACOTHERAPY]) {
-        parts = record[NON_PHARMACOTHERAPY].split(': ');
+        parts = record[NON_PHARMACOTHERAPY].split(': $');
         treatment = {
             category: 'Non-Pharmacotherapy',
             name: parts[0],
             price: parts[1],
+            diagnosis: diagnosis.name
         };
     }
 
@@ -104,14 +109,14 @@ var readCSVFile = function(req, res, next) {
     }
 
     function done(collection){
-        // Parse.objectToParseObject(collection)
-        //     .then(function() {
-        // 	   res.render('confirm.ejs', {items: collection});
-        //     }, function(err) {
-        //         res.status(200).send('Error occured ' + JSON.stringify(err));
-        //     });
-        console.log(collection);
-        res.render('confirm.ejs', {parse_items: collection});
+        Parse.objectToParseObject(collection)
+            .then(function() {
+        	   res.render('confirm.ejs', {parse_items: collection});
+            }, function(err) {
+                res.status(200).send('Error occured ' + JSON.stringify(err));
+            });
+        // console.log(collection);
+        // res.render('confirm.ejs', {parse_items: collection});
         // you can take this collection and render it
         // res.render('page', collection) // or something
     }
