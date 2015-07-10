@@ -21,10 +21,10 @@ $(document).ready(function() {
 			} else {
 				var finalObject = {complaint: null, test: null, prescription: null, diagnosis: null, treatment: null};
 				var typeIdentifier = rows[i].find('#dataInputType' + String(i)).val();
-				var firstObj = rows[i].find('#first' + String(i)).text();
-				var secondObj = rows[i].find('#second' + String(i)).text();
-				var thirdObj = rows[i].find('#third' + String(i)).text();
-				var fourthObj = rows[i].find('#fourth' + String(i)).text();
+				var firstObj = rows[i].find('#first' + String(i)).val();
+				var secondObj = rows[i].find('#second' + String(i)).val();
+				var thirdObj = rows[i].find('#third' + String(i)).val();
+				var fourthObj = rows[i].find('#fourth' + String(i)).val();
 				if (typeIdentifier === 'Complaint') {
 					var diagnosisArr = splitString(thirdObj);
 					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj};
@@ -58,7 +58,6 @@ $(document).ready(function() {
 	};
 
 	var changeFunction = function(index) {
-		console.log('changing' + index);
 		var rowSelf = rows[index].find('select');
 		var first = $("label[for='" + 'first' + index + "']");
 		var firstInput = $('input[id="first' + index + '"]');
@@ -108,14 +107,12 @@ $(document).ready(function() {
 
 	$('.plus-button').click(function() {
 		var rowDiv = rows[0];
-		console.log(rowDiv);
 		var newDiv = rowDiv.clone();
 		newDiv.attr('id', 'row' + rows.length);
 		var strIndex = String(rows.length);
 		var prevStrIndex = String(0);
 		var switchObj = newDiv.find('#dataInputType' + prevStrIndex);
 		switchObj.attr('id', 'dataInputType' + strIndex);
-		console.log(newDiv.find('#first' + strIndex));
 		newDiv.find('#first' + prevStrIndex).attr('id', 'first' + strIndex);
 		newDiv.find('#second' + prevStrIndex).attr('id', 'second' + strIndex);
 		newDiv.find('#third' + prevStrIndex).attr('id', 'third' + strIndex);
@@ -133,8 +130,6 @@ $(document).ready(function() {
 		});
 		rowDiv.parent().append(newDiv);
 		rows.push(newDiv);
-		console.log(newDiv);
-		console.log(rows);
 	});
 
 	$('#dataInputType0').change(function() {
