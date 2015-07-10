@@ -4,6 +4,9 @@ $(document).ready(function() {
 
 	var rows = [$('#row0')];
 
+	var splitString = function(input) {
+		return input.replace(/^\s+|\s+$/g,"").split(/\s*,\s*/);
+	}
 	// TODO : finish
 	var submitFunc = function() {
 		// Vincent look here
@@ -19,6 +22,7 @@ $(document).ready(function() {
 				var thirdObj = rows[i].find('#third' + String(i)).text();
 				var fourthObj = rows[i].find('#fourth' + String(i)).text();
 				if (typeIdentifier === 'Complaint') {
+					var diagnosisArr = splitString(thirdObj);
 					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj};
 				} else if (typeIdentifier === 'Treatment') {
 					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj, price: fourthObj};
@@ -70,7 +74,7 @@ $(document).ready(function() {
 		if (rowSelf.val() === 'Complaint') {
 			first.text('Category');
 			second.text('Name');
-			third.text('Diagnosis');
+			third.text('Diagnoses ("," split)');
 			fourth.hide();
 			fourthInput.hide();
 		} else if (rowSelf.val() === 'Diagnosis') {
