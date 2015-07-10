@@ -115,7 +115,44 @@ Parse.Cloud.beforeSave('Diagnosis', function(request, response) {
 		});
 });
 
-Parse.Cloud.beforeSave('Treatment', function(request, response) {	
+
+Parse.Cloud.beforeSave('Prescription', function(request, response) {
+	var query = new Parse.Query('Prescription');
+	query.equalTo('Name', request.object.get('Name'));
+	query.first()
+		.then(function(object) {
+			if (object) {
+				response.error('Prescription already existed');
+				// var treatmentQuery = new Parse.Query('Treatment');
+				// treatmentQuery.equalTo('Name', request.object.get('TreatmentName'));
+				// treatmentQuery.first()
+				// 	.then(function(treatment) {
+				// 		if (treatment) {
+				// 			var relation = treatment.relation('Prescriptions');
+				// 			relation.add(request.object);
+				// 			treatment.save().then(function() {
+				// 				response.error('Object already exist. Linked to requested treatment');
+				// 			}, function() {
+				// 				response.error('Object already exist but failed to link to requested treatment');
+				// 			});
+				// 		} else {
+				// 			response.error('Treatment linked not found');
+				// 		}
+				// 	}, function() {
+				// 		response.error('Error looking up treatment');
+				// 	});
+			} else {
+				request.object.unset('Treatment');
+				response.success();
+			}	
+		},
+		function() {
+			response.error('Shit happened to your prescription bro');
+		});
+});
+
+Parse.Cloud.beforeSave('Treatment', function(request, response) {
+	
 	var query = new Parse.Query('Treatment');
 	query.equalTo('Name', request.object.get('Name'));
 	query.first()
@@ -133,7 +170,22 @@ Parse.Cloud.beforeSave('Treatment', function(request, response) {
 						if (diagnosis) {
 							request.object.set('Diagnosis', diagnosis);
 							request.object.unset('DiagnosisName');
-							response.success();
+							var prescriptionName = request.object.get('PrescriptionName');
+							var prescriptionQuery = new Parse.Query('Prescription');
+							prescriptionQuery.equalTo('Name', prescriptionName);
+							prescriptionQuery.first()
+								.then(function(prescription) {
+									if (prescription) {
+										var relation = request.object.relation('Prescriptions');
+										request.object.unset('PrescriptionName');
+										relation.add(prescription);
+										response.success();
+									} else {
+										response.error('Prescription linked not found');
+									}
+								}, function() {
+									response.error('Error looking up prescription');
+								});
 						}
 						else {
 							response.error('Diagnosis linked not found');
@@ -145,97 +197,5 @@ Parse.Cloud.beforeSave('Treatment', function(request, response) {
 			}
 		}, function() {
 			response.error('Error looking up Treatment');
-		});
-});
-
-var updateTreatmentRelationOnSuccess = function(request, response) {
-	var treatmentQuery = new Parse.Query('Treatment');
-	treatmentQuery.equalTo('Name', request.object.get('TreatmentName'));
-	treatmentQuery.first()
-		.then(function(treatment) {
-			if (treatment) {
-				var relation = treatment.relation('Prescriptions');
-				relation.add(request.object);
-				treatment.save().then(function() {
-					response.success('Linked to requested treatment');
-				}, function() {
-					response.error('Failed to link to requested treatment');
-				});
-			} else {
-				response.error('Treatment linked not found');
-			}
-		}, function() {
-			response.error('Error looking up treatment');
-		});
-};
-
-var updateTreatmentRelationOnDuplicate = function(request, response) {
-	var treatmentQuery = new Parse.Query('Treatment');
-	treatmentQuery.equalTo('Name', request.object.get('TreatmentName'));
-	treatmentQuery.first()
-		.then(function(treatment) {
-			if (treatment) {
-				var relation = treatment.relation('Prescriptions');
-				relation.add(request.object);
-				treatment.save().then(function() {
-					response.error('Object already exist. Linked to requested treatment');
-				}, function() {
-					response.error('Object already exist but failed to link to requested treatment');
-				});
-			} else {
-				response.error('Treatment linked not found');
-			}
-		}, function() {
-			response.error('Error looking up treatment');
-		});
-};
-
-Parse.Cloud.beforeSave('Prescription', function(request, response) {
-	var query = new Parse.Query('Prescription');
-	query.equalTo('Name', request.object.get('Name'));
-	query.first()
-		.then(function(object) {
-			if (object) {
-				var treatmentQuery = new Parse.Query('Treatment');
-				treatmentQuery.equalTo('Name', request.object.get('TreatmentName'));
-				treatmentQuery.first()
-					.then(function(treatment) {
-						if (treatment) {
-							var relation = treatment.relation('Prescriptions');
-							relation.add(request.object);
-							treatment.save().then(function() {
-								response.error('Linked to requested treatment');
-							}, function() {
-								response.error('Failed to link to requested treatment');
-							});
-						} else {
-							response.error('Treatment linked not found');
-						}
-					}, function() {
-						response.error('Error looking up treatment');
-					});
-			} else {
-				var treatmentQuery = new Parse.Query('Treatment');
-				treatmentQuery.equalTo('Name', request.object.get('TreatmentName'));
-				treatmentQuery.first()
-					.then(function(treatment) {
-						if (treatment) {
-							var relation = treatment.relation('Prescriptions');
-							relation.add(request.object);
-							treatment.save().then(function() {
-								response.success('Object already exist. Linked to requested treatment');
-							}, function() {
-								response.error('Object already exist but failed to link to requested treatment');
-							});
-						} else {
-							response.error('Treatment linked not found');
-						}
-					}, function() {
-						response.error('Error looking up treatment');
-					});
-			}	
-		},
-		function() {
-			response.error('Shit happened to your prescription bro');
-		});
+		}); 
 });

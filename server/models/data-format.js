@@ -30,6 +30,7 @@ var sampleData = [
 			name: 'some name',
 			price: 'some price',
 			diagnosis: 'name of diagnosis linked',
+			prescription: 'name of linked prescription'
 		}
 	}
 ];

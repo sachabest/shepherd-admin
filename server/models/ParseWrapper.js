@@ -55,7 +55,7 @@ var Prescription = Parse.Object.extend({
 		this.set('Name', opts.amount + opts.unit + opts.price);
 		this.set('Price', Number(opts.price));
 		this.set('Amount', Number(opts.amount));
-		this.set('Unit', opts.unit);
+		this.set('Units', opts.unit);
 		this.set('Treatment', opts.treatment);
 	}
 });
@@ -68,6 +68,7 @@ var Treatment = Parse.Object.extend({
 		this.set('Name', opts.name);
 		this.set('Price', Number(opts.price));
 		this.set('DiagnosisName', opts.diagnosis);
+		this.set('PrescriptionName', opts.prescription);
 	}
 });
 
@@ -103,7 +104,8 @@ var objectToParseObject = function(objects) {
 	});
 
 	var prescriptions = _.map(objects, function(object) {
-		if (object.amount) {
+		// console.log(object.prescription);
+		if (object.prescription.amount) {
 			return new Prescription(null, object.prescription);
 		}
 	});
@@ -121,16 +123,12 @@ var objectToParseObject = function(objects) {
 	// Save object
 
 	var complaintPromise = saveObjectsSequentially(complaints);
-
 	var testPromise = saveObjectsSequentially(tests, complaintPromise);
-
 	var diagnosesPromise = saveObjectsSequentially(diagnoses, testPromise);
+	var treatmentsPromise = saveObjectsSequentially(treatments, diagnosesPromise);
+	var prescriptionPromise = saveObjectsSequentially(prescriptions, treatmentsPromise);
 
-	var prescriptionPromise = saveObjectsSequentially(prescriptions, diagnosesPromise);
-
-	var treatmentsPromise = saveObjectsSequentially(treatments, prescriptionPromise);
-
-	return treatmentsPromise;
+	return prescriptionPromise;
 };
 
 // var saveAllObjects = function(complaints, tests, diagno)

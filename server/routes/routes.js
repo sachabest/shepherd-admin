@@ -135,11 +135,8 @@ var readCSVFile = function(req, res, next) {
 
 var saveManualEntries = function(req, res) {
     var data = req.body.data;
-    var collection = _.each(data, function(record) {
-       
-    });
-
-}
+    console.log(data);
+};
 
 var routes = {
 	readCSVFile: readCSVFile,
