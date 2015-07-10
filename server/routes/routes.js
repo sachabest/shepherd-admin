@@ -1,7 +1,8 @@
 'use strict';
 
 var CSVParser = require('csv-parse');
-var Parse = require('../models/ParseWrapper');
+var ParseWrapper = require('../models/ParseWrapper');
+var _ = require('underscore');
 var fs = require('fs');
 
 var COMPLAINT_CATEGORY = 0;
@@ -10,7 +11,9 @@ var DIAGNOSIS_STATUS = 2;
 var DIAGNOSTIC_TEST = 3;
 var DIAGNOSIS = 4;
 var PHARMACOTHERAPY = 5;
-var NON_PHARMACOTHERAPY = 6;
+var DOSAGE = 6;
+var NON_PHARMACOTHERAPY = 7;
+
 
 var recordToObject = function(record) {
     var parts;
@@ -39,10 +42,6 @@ var recordToObject = function(record) {
     
     if (record[PHARMACOTHERAPY]) {
         parts = record[PHARMACOTHERAPY].split(': $');
-        prescription = {
-            name: parts[0],
-            price: parts[1]
-        };
 
         treatment = {
             category: 'Pharmacotherapy',
@@ -50,6 +49,15 @@ var recordToObject = function(record) {
             price: parts[1],
             diagnosis: diagnosis.name
         };
+
+        parts = record[DOSAGE].split(' ');
+        prescription = {
+            amount: parts[0],
+            unit: parts[1],
+            price: treatment.price,
+            treatment: treatment.name
+        };
+
     }
 
     if (record[NON_PHARMACOTHERAPY]) {
@@ -109,7 +117,7 @@ var readCSVFile = function(req, res, next) {
     }
 
     function done(collection){
-        Parse.objectToParseObject(collection)
+        ParseWrapper.objectToParseObject(collection)
             .then(function() {
         	   res.render('confirm.ejs', {parse_items: collection});
             }, function(err) {
@@ -125,8 +133,17 @@ var readCSVFile = function(req, res, next) {
     processCSVFile(filePath, columns, recordToObject, onError, done);
 };
 
+var saveManualEntries = function(req, res) {
+    var data = req.body.data;
+    var collection = _.each(data, function(record) {
+       
+    });
+
+}
+
 var routes = {
-	readCSVFile: readCSVFile
+	readCSVFile: readCSVFile,
+    saveManualEntries: saveManualEntries
 };
 
 module.exports = routes;
