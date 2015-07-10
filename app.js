@@ -34,7 +34,7 @@ app.get('/confirm', function(req, res) {
 app.post('/uploadData', [new Multer({dest:'./uploads'}), routes.readCSVFile]);
 
 // Start server
-var server = app.listen(3000, function () {
+var server = app.listen(80, function () {
 
   var port = server.address().port;
 
