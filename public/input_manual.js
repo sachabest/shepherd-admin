@@ -30,13 +30,13 @@ $(document).ready(function() {
 					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj};
 				} else if (typeIdentifier === 'Treatment') {
 					var pills = splitString(fourthObj);
-					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj, prescriptions: pills};
+					finalObject.treatment = {category: firstObj, name: secondObj, diagnosis: thirdObj, prescription: pills};
 				} else if (typeIdentifier === 'Diagnosis') {
 					finalObject.diagnosis = {category: firstObj, name: secondObj, complaint: thirdObj};
 				} else if (typeIdentifier === 'Test') {
-					finalObject.complaint = {category: firstObj, name: secondObj, complaint: thirdObj, price: fourthObj};
+					finalObject.test = {category: firstObj, name: secondObj, complaint: thirdObj, price: fourthObj};
 				} else if (typeIdentifier === 'Prescription') {
-					finalObject.complaint = {amount: firstObj, price: secondObj, unit: thirdObj, treatment: fourthObj};
+					finalObject.prescription = {amount: firstObj, price: secondObj, unit: thirdObj, treatment: fourthObj};
 				}
 				fullObjects.push(finalObject);
 			}
