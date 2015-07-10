@@ -19,7 +19,7 @@ $(document).ready(function() {
 			if (rows[i] == null) {
 				continue;
 			} else {
-				var finalObject = {complaint: null, test: null, prescription: null, diagnosis: null, treatment: null};
+				var finalObject = {};
 				var typeIdentifier = rows[i].find('#dataInputType' + String(i)).val();
 				var firstObj = rows[i].find('#first' + String(i)).val();
 				var secondObj = rows[i].find('#second' + String(i)).val();
@@ -27,10 +27,20 @@ $(document).ready(function() {
 				var fourthObj = rows[i].find('#fourth' + String(i)).val();
 				if (typeIdentifier === 'Complaint') {
 					var diagnosisArr = splitString(thirdObj);
-					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj};
+					for (var i = 0; i < diagnosisArr.length; i++) {
+						var object = {};
+						object.complaint = {category: firstObj, name: secondObj, diagnosis: diagnosisArr[i]};
+						fullObjects.push(object);
+					}
+					// finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: diagnosisArr};
 				} else if (typeIdentifier === 'Treatment') {
 					var pills = splitString(fourthObj);
-					finalObject.treatment = {category: firstObj, name: secondObj, diagnosis: thirdObj, prescription: pills};
+					for (var i = 0; i < pills.length; i++) {
+						var object = {};
+						object.treatment = {category: firstObj, name: secondObj, diagnosis: thirdObj, prescription: pills[i]};
+						fullObjects.push(object);
+					}
+					// finalObject.treatment = {category: firstObj, name: secondObj, diagnosis: thirdObj, prescription: pills};
 				} else if (typeIdentifier === 'Diagnosis') {
 					finalObject.diagnosis = {category: firstObj, name: secondObj, complaint: thirdObj};
 				} else if (typeIdentifier === 'Test') {
@@ -38,7 +48,9 @@ $(document).ready(function() {
 				} else if (typeIdentifier === 'Prescription') {
 					finalObject.prescription = {amount: firstObj, price: secondObj, unit: thirdObj, treatment: fourthObj};
 				}
-				fullObjects.push(finalObject);
+				if (!$.isEmptyObject(finalObject)) {
+					fullObjects.push(finalObject);
+				}
 			}
 		}
 		console.log(fullObjects);

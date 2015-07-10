@@ -83,16 +83,32 @@ var saveObjectsSequentially = function(objects, prevPromise) {
 };
 
 var objectToParseObject = function(objects) {
-	var complaints = _.map(objects, function(object){
-		return new Complaint(null, object.complaint);
+	var complaints = _.map(objects, function(object) {
+		if (object.complaint) {
+			return new Complaint(null, object.complaint);
+		}
+	});
+
+	complaints = _.filter(complaints, function(complaint) {
+		if (complaint) {
+			return complaint;
+		}
 	});
 
 	var tests = _.map(objects, function(object) {
-		return new Test(null, object.test);
+		if (object.test) {
+			return new Test(null, object.test);
+		}
+	});
+
+	tests = _.filter(tests, function(test) {
+		if (test) {
+			return test;
+		}
 	});
 
 	var diagnoses = _.map(objects, function(object) {
-		if (object.diagnosis.name) {
+		if (object.diagnosis && object.diagnosis.name) {
 			return new Diagnosis(null, object.diagnosis);
 		}
 	});
@@ -105,7 +121,7 @@ var objectToParseObject = function(objects) {
 
 	var prescriptions = _.map(objects, function(object) {
 		// console.log(object.prescription);
-		if (object.prescription.amount) {
+		if (object.prescription && object.prescription.amount) {
 			return new Prescription(null, object.prescription);
 		}
 	});
@@ -117,7 +133,15 @@ var objectToParseObject = function(objects) {
 	});
 
 	var treatments = _.map(objects, function(object) {
-		return new Treatment(null, object.treatment);
+		if (object.treatment) {
+			return new Treatment(null, object.treatment);
+		}
+	});
+
+	treatments = _.filter(treatments, function(treatment) {
+		if (treatment) {
+			return treatment;
+		}
 	});
 
 	// Save object

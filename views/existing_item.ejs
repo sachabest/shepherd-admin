@@ -22,7 +22,8 @@
 						<td><div><%=items[index].test.name %></div>
 						<div><%=items[index].price %></div></td>
 					<% } if (items[index].prescription) { %>
-						<td><div><%=items[index].prescription.name %></div>
+						<td><div><%=items[index].prescription.amount%></div>
+						<div><%=items[index].prescription.unit%></div>
 						<div><%=items[index].prescription.price %></div></td>
 					<% } if (items[index].treatment) { %>
 						<td><div><%=items[index].treatment.name %></div>

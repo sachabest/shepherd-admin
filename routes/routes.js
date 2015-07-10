@@ -118,10 +118,8 @@ var readCSVFile = function(req, res, next) {
 
     function done(collection){
         ParseWrapper.objectToParseObject(collection)
-            .then(function() {
+            .always(function() {
         	   res.render('confirm.ejs', {parse_items: collection});
-            }, function(err) {
-                res.status(200).send('Error occured ' + JSON.stringify(err));
             });
         // console.log(collection);
         // res.render('confirm.ejs', {parse_items: collection});
@@ -134,9 +132,11 @@ var readCSVFile = function(req, res, next) {
 };
 
 var saveManualEntries = function(req, res) {
-    var data = req.body.data;
-    console.log(req);
-    console.log(data);
+    var data = req.body.fullObjects;
+    ParseWrapper.objectToParseObject(data)
+        .always(function() {
+            res.render('confirm.ejs', {parse_items: data});
+        });
 };
 
 var routes = {
