@@ -135,6 +135,7 @@ var readCSVFile = function(req, res, next) {
 
 var saveManualEntries = function(req, res) {
     var data = req.body.data;
+    console.log(req);
     console.log(data);
 };
 
