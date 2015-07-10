@@ -10,7 +10,7 @@ $(document).ready(function() {
 			return arr;
 		}
 		else return [input];
-	}
+	};
 	// TODO : finish
 	var submitFunc = function() {
 		// Vincent look here
@@ -42,7 +42,7 @@ $(document).ready(function() {
 			}
 		}
 		console.log(fullObjects);
-		$.post('/manualUpload', fullObjects);
+		$.post('/manualUpload', {fullObjects});
 		// now fullObjects is done
 	};
 
