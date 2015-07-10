@@ -4,6 +4,13 @@ $(document).ready(function() {
 
 	var rows = [$('#row0')];
 
+	var splitString = function(input) {
+		var arr = input.replace(/^\s+|\s+$/g,"").split(/\s*,\s*/);
+		if (arr.length > 0) {
+			return arr;
+		}
+		else return [input];
+	}
 	// TODO : finish
 	var submitFunc = function() {
 		// Vincent look here
@@ -12,27 +19,35 @@ $(document).ready(function() {
 			if (rows[i] == null) {
 				continue;
 			} else {
-				var typeIdentifier = rows[i].find('#dataInputType' + String(index)).val();
-				var firstObj = rows[i].find('#first' + String(index)).text();
-				var secondObj = rows[i].find('#second' + String(index)).text();
-				var thirdObj = rows[i].find('#third' + String(index)).text();
-				var fourthObj = rows[i].find('#fourth' + String(index)).text();
+				var finalObject = {complaint: null, test: null, prescription: null, diagnosis: null, treatment: null};
+				var typeIdentifier = rows[i].find('#dataInputType' + String(i)).val();
+				var firstObj = rows[i].find('#first' + String(i)).text();
+				var secondObj = rows[i].find('#second' + String(i)).text();
+				var thirdObj = rows[i].find('#third' + String(i)).text();
+				var fourthObj = rows[i].find('#fourth' + String(i)).text();
 				if (typeIdentifier === 'Complaint') {
-					// do something here
+					var diagnosisArr = splitString(thirdObj);
+					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj};
 				} else if (typeIdentifier === 'Treatment') {
-					//
+					var pills = splitString(fourthObj);
+					finalObject.complaint = {category: firstObj, name: secondObj, diagnosis: thirdObj, prescriptions: pills};
 				} else if (typeIdentifier === 'Diagnosis') {
-					// 
+					finalObject.diagnosis = {category: firstObj, name: secondObj, complaint: thirdObj};
 				} else if (typeIdentifier === 'Test') {
-
+					finalObject.complaint = {category: firstObj, name: secondObj, complaint: thirdObj, price: fourthObj};
 				} else if (typeIdentifier === 'Prescription') {
-					//
+					finalObject.complaint = {amount: firstObj, price: secondObj, unit: thirdObj, treatment: fourthObj};
 				}
+				fullObjects.push(finalObject);
 			}
 		}
+		console.log(fullObjects);
+		$.post('/manualUpload', fullObjects);
+		// now fullObjects is done
 	};
 
 	$('#submit-button').click(function() {
+		console.log('submitting');
 		submitFunc();
 	});
 
@@ -64,7 +79,7 @@ $(document).ready(function() {
 		if (rowSelf.val() === 'Complaint') {
 			first.text('Category');
 			second.text('Name');
-			third.text('Diagnosis');
+			third.text('Diagnoses ("," split)');
 			fourth.hide();
 			fourthInput.hide();
 		} else if (rowSelf.val() === 'Diagnosis') {
@@ -76,22 +91,18 @@ $(document).ready(function() {
 		} else if (rowSelf.val() === 'Treatment') {
 			first.text('Category');
 			second.text('Name');
-			third.text('Complaint');
-			fourth.text('Price');
+			third.text('Diagnosis');
+			fourth.text('Dosages');
 		} else if (rowSelf.val() === 'Prescription') {
 			first.text('Amount');
 			second.text('Price');
 			third.text('Unit')
-			fourth.hide();
-			fourthInput.hide();
+			fourth.text('Treatment')
 		} else if (rowSelf.val() === 'Test') {
-			first.text('Amount');
-			second.hide();
-			secondInput.hide();
-			third.hide();
-			thirdInput.hide();
-			fourth.hide();
-			fourthInput.hide();
+			first.text('Category');
+			second.text('Name');
+			third.text('Complaint');
+			fourth.text('Price');
 		}
 	};
 

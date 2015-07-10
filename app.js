@@ -7,6 +7,8 @@ var app = express();
 var BodyParser = require('body-parser');
 var routes = require('./routes/routes');
 
+var port = process.env.PORT || 8080;
+
 // Global app configuration section
 app.set('view engine', 'ejs');    // Set the template engine
 
@@ -34,10 +36,10 @@ app.get('/confirm', function(req, res) {
 app.post('/uploadData', [new Multer({dest:'./uploads'}), routes.readCSVFile]);
 
 // Start server
-var server = app.listen(3000, function () {
+var server = app.listen(port, function () {
 
-  var port = server.address().port;
+  var port2 = server.address().port;
 
-  console.log('Server listening on port %s', port);
+  console.log('Server listening on port %s', port2);
 
 });
