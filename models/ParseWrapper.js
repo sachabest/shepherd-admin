@@ -52,7 +52,7 @@ var Prescription = Parse.Object.extend({
 	className: 'Prescription',
 
 	initialize: function(attr, opts) {
-		this.set('Name', opts.amount + opts.unit + opts.price);
+		this.set('Name', opts.amount + opts.unit + Number(opts.price));
 		this.set('Price', Number(opts.price));
 		this.set('Amount', Number(opts.amount));
 		this.set('Units', opts.unit);
