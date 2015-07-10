@@ -14,6 +14,8 @@ var PHARMACOTHERAPY = 5;
 var DOSAGE = 6;
 var NON_PHARMACOTHERAPY = 7;
 
+var lastManualRecords = [];
+
 
 var recordToObject = function(record) {
     var parts;
@@ -131,17 +133,23 @@ var readCSVFile = function(req, res, next) {
     processCSVFile(filePath, columns, recordToObject, onError, done);
 };
 
-var saveManualEntries = function(req, res) {
+var saveManualEntries = function(req, res, next) {
     var data = req.body.fullObjects;
     ParseWrapper.objectToParseObject(data)
         .always(function() {
-            res.render('confirm.ejs', {parse_items: data});
+            lastManualRecords = data;
+            res.status(200).send(data);
         });
+};
+
+var getConfirmScreen = function(req, res) {
+    res.render('confirm.ejs', {parse_items: lastManualRecords});
 };
 
 var routes = {
 	readCSVFile: readCSVFile,
-    saveManualEntries: saveManualEntries
+    saveManualEntries: saveManualEntries,
+    getConfirmScreen: getConfirmScreen
 };
 
 module.exports = routes;

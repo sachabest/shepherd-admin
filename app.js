@@ -29,6 +29,8 @@ app.get('/manual', function(req, res) {
 	res.render('main.ejs');
 });
 
+app.get('/confirmScreen', routes.getConfirmScreen);
+
 app.get('/confirm', function(req, res) {
 	res.render('existing_item.ejs', {items: null});
 });

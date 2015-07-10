@@ -53,8 +53,11 @@ $(document).ready(function() {
 				}
 			}
 		}
-		console.log(fullObjects);
-		$.post('/manualUpload', {fullObjects});
+		// console.log(fullObjects);
+		$.post('/manualUpload', {fullObjects}).done(function(data){
+			// console.log(data);
+			window.location.href='/confirmScreen';
+		});
 		// now fullObjects is done
 	};
 
