@@ -26,6 +26,7 @@ var recordToObject = function(record) {
     };
     var diagnosis = {
         name: record[DIAGNOSIS],
+        category: record[COMPLAINT_CATEGORY],
         complaint: complaint.name
     };
 
@@ -38,6 +39,7 @@ var recordToObject = function(record) {
         test = {
             name: parts[0],
             price: parts[1],
+            category: record[COMPLAINT_CATEGORY],
             complaint: complaint.name
         };
     }
