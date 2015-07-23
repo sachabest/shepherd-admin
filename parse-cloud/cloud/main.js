@@ -142,7 +142,8 @@ Parse.Cloud.beforeSave('Prescription', function(request, response) {
 				// 		response.error('Error looking up treatment');
 				// 	});
 			} else {
-				request.object.unset('Treatment');
+
+				// request.object.unset('Treatment');
 				response.success();
 			}	
 		},
@@ -170,22 +171,23 @@ Parse.Cloud.beforeSave('Treatment', function(request, response) {
 						if (diagnosis) {
 							request.object.set('Diagnosis', diagnosis);
 							request.object.unset('DiagnosisName');
-							var prescriptionName = request.object.get('PrescriptionName');
-							var prescriptionQuery = new Parse.Query('Prescription');
-							prescriptionQuery.equalTo('Name', prescriptionName);
-							prescriptionQuery.first()
-								.then(function(prescription) {
-									if (prescription) {
-										var relation = request.object.relation('Prescriptions');
-										request.object.unset('PrescriptionName');
-										relation.add(prescription);
-										response.success();
-									} else {
-										response.error('Prescription linked not found');
-									}
-								}, function() {
-									response.error('Error looking up prescription');
-								});
+							response.success();
+							// var prescriptionName = request.object.get('PrescriptionName');
+							// var prescriptionQuery = new Parse.Query('Prescription');
+							// prescriptionQuery.equalTo('Name', prescriptionName);
+							// prescriptionQuery.first()
+							// 	.then(function(prescription) {
+							// 		if (prescription) {
+							// 			var relation = request.object.relation('Prescriptions');
+							// 			request.object.unset('PrescriptionName');
+							// 			relation.add(prescription);
+							// 			response.success();
+							// 		} else {
+							// 			response.error('Prescription linked not found');
+							// 		}
+							// 	}, function() {
+							// 		response.error('Error looking up prescription');
+							// 	});
 						}
 						else {
 							response.error('Diagnosis linked not found');
