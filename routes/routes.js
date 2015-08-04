@@ -20,8 +20,8 @@ var lastManualRecords = [];
 
 var recordToObject = function(record) {
     // Sanitize empty lines
-    record = _.compact(record);
-    if (_.size(record) === 0) {
+    var compactedRecord = _.compact(record);
+    if (_.size(compactedRecord) === 0) {
         return null;
     }
     var parts;
@@ -40,9 +40,12 @@ var recordToObject = function(record) {
     var prescription = {};
     var treatment = {};
 
+    // console.log(record);
     if (record[DIAGNOSTIC_TEST]) {
+        // console.log(record[DIAGNOSTIC_TEST]);
         parts = record[DIAGNOSTIC_TEST].split(':');
-        parts[0] = _string.trim(parts[0]);
+        parts[0] = _string.trim(parts[0], ':');
+        // console.log(parts);
         parts[1] = _string.trim(parts[1], ' $');
         test = {
             name: parts[0],
@@ -54,7 +57,7 @@ var recordToObject = function(record) {
     
     if (record[PHARMACOTHERAPY]) {
         parts = record[PHARMACOTHERAPY].split(':');
-        parts[0] = _string.trim(parts[0]);
+        parts[0] = _string.trim(parts[0], ':');
         parts[1] = _string.trim(parts[1], ' $');
         treatment = {
             category: 'Pharmacotherapy',
@@ -75,7 +78,7 @@ var recordToObject = function(record) {
 
     if (record[NON_PHARMACOTHERAPY]) {
         parts = record[NON_PHARMACOTHERAPY].split(':');
-        parts[0] = _string.trim(parts[0]);
+        parts[0] = _string.trim(parts[0], ' :');
         parts[1] = _string.trim(parts[1], ' $');
         treatment = {
             category: 'Non-Pharmacotherapy',
@@ -119,8 +122,12 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
 
     parser.on("end", function() {
         // Remove the uploaded file
-        fs.unlink(srcFile);
-        done(collection);
+        fs.unlink(srcFile, function(err) {
+            if (err) {
+                console.log('Error deleting uploaded file: ' + err);
+            }
+            done(collection);
+        });
     });
 
     source.pipe(parser);
@@ -140,6 +147,7 @@ var readCSVFile = function(req, res, next) {
             .always(function() {
         	   res.render('confirm.ejs', {parse_items: collection});
             });
+        // res.render('confirm.ejs', {parse_items: collection});
         // console.log(collection);
         // res.render('confirm.ejs', {parse_items: collection});
         // you can take this collection and render it
