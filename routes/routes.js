@@ -3,6 +3,7 @@
 var CSVParser = require('csv-parse');
 var ParseWrapper = require('../models/ParseWrapper');
 var _ = require('underscore');
+var _string = require('underscore.string');
 var fs = require('fs');
 
 var COMPLAINT_CATEGORY = 0;
@@ -18,6 +19,11 @@ var lastManualRecords = [];
 
 
 var recordToObject = function(record) {
+    // Sanitize empty lines
+    record = _.compact(record);
+    if (_.size(record) === 0) {
+        return null;
+    }
     var parts;
     var complaint = {
         name: record[COMPLAINT_NAME],
@@ -35,7 +41,9 @@ var recordToObject = function(record) {
     var treatment = {};
 
     if (record[DIAGNOSTIC_TEST]) {
-        parts = record[DIAGNOSTIC_TEST].split(': $');
+        parts = record[DIAGNOSTIC_TEST].split(':');
+        parts[0] = _string.trim(parts[0]);
+        parts[1] = _string.trim(parts[1], ' $');
         test = {
             name: parts[0],
             price: parts[1],
@@ -45,8 +53,9 @@ var recordToObject = function(record) {
     }
     
     if (record[PHARMACOTHERAPY]) {
-        parts = record[PHARMACOTHERAPY].split(': $');
-
+        parts = record[PHARMACOTHERAPY].split(':');
+        parts[0] = _string.trim(parts[0]);
+        parts[1] = _string.trim(parts[1], ' $');
         treatment = {
             category: 'Pharmacotherapy',
             name: parts[0],
@@ -65,7 +74,9 @@ var recordToObject = function(record) {
     }
 
     if (record[NON_PHARMACOTHERAPY]) {
-        parts = record[NON_PHARMACOTHERAPY].split(': $');
+        parts = record[NON_PHARMACOTHERAPY].split(':');
+        parts[0] = _string.trim(parts[0]);
+        parts[1] = _string.trim(parts[1], ' $');
         treatment = {
             category: 'Non-Pharmacotherapy',
             name: parts[0],
@@ -107,6 +118,8 @@ var processCSVFile = function(srcFile, columns, onNewRecord, errorHandler, done)
     });
 
     parser.on("end", function() {
+        // Remove the uploaded file
+        fs.unlink(srcFile);
         done(collection);
     });
 
@@ -121,6 +134,8 @@ var readCSVFile = function(req, res, next) {
     }
 
     function done(collection){
+        collection = _.compact(collection);
+        // console.log(collection);
         ParseWrapper.objectToParseObject(collection)
             .always(function() {
         	   res.render('confirm.ejs', {parse_items: collection});

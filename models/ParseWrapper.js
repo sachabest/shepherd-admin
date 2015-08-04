@@ -89,11 +89,7 @@ var objectToParseObject = function(objects) {
 		}
 	});
 
-	complaints = _.filter(complaints, function(complaint) {
-		if (complaint) {
-			return complaint;
-		}
-	});
+	complaints = _.compact(complaints);
 
 	var tests = _.map(objects, function(object) {
 		if (object.test) {
@@ -101,11 +97,7 @@ var objectToParseObject = function(objects) {
 		}
 	});
 
-	tests = _.filter(tests, function(test) {
-		if (test) {
-			return test;
-		}
-	});
+	tests = _.compact(tests);
 
 	var diagnoses = _.map(objects, function(object) {
 		if (object.diagnosis && object.diagnosis.name) {
@@ -113,11 +105,7 @@ var objectToParseObject = function(objects) {
 		}
 	});
 
-	diagnoses = _.filter(diagnoses, function(diagnosis) {
-		if (diagnosis) {
-			return diagnosis;
-		}
-	});
+	diagnoses = _.compact(diagnoses);
 
 	var prescriptions = _.map(objects, function(object) {
 		// console.log(object.prescription);
@@ -126,11 +114,7 @@ var objectToParseObject = function(objects) {
 		}
 	});
 
-	prescriptions = _.filter(prescriptions, function(prescription) {
-		if (prescription) {
-			return prescription;
-		}
-	});
+	prescriptions = _.compact(prescriptions);
 
 	var treatments = _.map(objects, function(object) {
 		if (object.treatment) {
@@ -138,11 +122,7 @@ var objectToParseObject = function(objects) {
 		}
 	});
 
-	treatments = _.filter(treatments, function(treatment) {
-		if (treatment) {
-			return treatment;
-		}
-	});
+	treatments = _.compact(prescriptions);
 
 	// Save object
 
