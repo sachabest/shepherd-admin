@@ -83,6 +83,7 @@ var saveObjectsSequentially = function(objects, prevPromise) {
 };
 
 var objectToParseObject = function(objects) {
+	// console.log(objects);
 	var complaints = _.map(objects, function(object) {
 		if (object.complaint) {
 			return new Complaint(null, object.complaint);
@@ -109,6 +110,7 @@ var objectToParseObject = function(objects) {
 
 	var prescriptions = _.map(objects, function(object) {
 		// console.log(object.prescription);
+		console.log(object.prescription);
 		if (object.prescription && object.prescription.amount) {
 			return new Prescription(null, object.prescription);
 		}
@@ -117,14 +119,13 @@ var objectToParseObject = function(objects) {
 	prescriptions = _.compact(prescriptions);
 
 	var treatments = _.map(objects, function(object) {
+		// console.log(object.treatment);
 		if (object.treatment) {
 			return new Treatment(null, object.treatment);
 		}
 	});
 
-	treatments = _.compact(prescriptions);
-
-	// Save object
+	treatments = _.compact(treatments);
 
 	var complaintPromise = saveObjectsSequentially(complaints);
 	var testPromise = saveObjectsSequentially(tests, complaintPromise);
@@ -132,7 +133,8 @@ var objectToParseObject = function(objects) {
 	var treatmentsPromise = saveObjectsSequentially(treatments, diagnosesPromise);
 	var prescriptionPromise = saveObjectsSequentially(prescriptions, treatmentsPromise);
 
-	return prescriptionPromise;
+	// return prescriptionPromise;
+	return complaintPromise;
 };
 
 // var saveAllObjects = function(complaints, tests, diagno)

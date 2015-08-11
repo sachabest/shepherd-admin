@@ -9,11 +9,11 @@ var fs = require('fs');
 var COMPLAINT_CATEGORY = 0;
 var COMPLAINT_NAME = 1;
 var DIAGNOSIS_STATUS = 2;
-var DIAGNOSTIC_TEST = 3;
+var DIAGNOSTIC_TEST = 3;    // format: [Name]: $[price]
 var DIAGNOSIS = 4;
-var PHARMACOTHERAPY = 5;
-var DOSAGE = 6;
-var NON_PHARMACOTHERAPY = 7;
+var PHARMACOTHERAPY = 5;    // format: [Name]: $[price]
+var DOSAGE = 6;             // format: [amount] [unit]
+var NON_PHARMACOTHERAPY = 7;// format: [Name]: $[price]
 
 var lastManualRecords = [];
 
@@ -155,7 +155,7 @@ var readCSVFile = function(req, res, next) {
     }
 
     var columns = true; 
-    res.send('Processing....please wait');
+    // res.send('Processing....please wait');
     processCSVFile(filePath, columns, recordToObject, onError, done);
 };
 
