@@ -155,6 +155,7 @@ var readCSVFile = function(req, res, next) {
     }
 
     var columns = true; 
+    res.send('Processing....please wait');
     processCSVFile(filePath, columns, recordToObject, onError, done);
 };
 
